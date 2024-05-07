@@ -1,40 +1,27 @@
 from tensor import Tensor
 from python import Python
 
-# fn main():
-#     var n: Int = 10
-#     var x = Tensor[DType.float32](n)
-
-#     try:
-#         with open("src/test/resources/samples/measurements-10.txt", "r") as f:
-#             var data_str: List[String] = f.read().split("\n")
-#             for i in range(n):
-#                 var data_row = data_str[i]
-#                 var parts = data_row.split(';')
-#     except IOError:
-#         print("File not found")
-
-#     var greet_me: String = greet("world")
-#     print(greet_me)
-#     print("Baseline not yet implemented!")
-
 
 fn parse_float(raw_num: String) -> Float64:
     var seperator_pos = raw_num.find(".")
-    var seperator_pos_int: Int = int(seperator_pos)
+    if seperator_pos == -1:
+        seperator_pos = len(raw_num)
+    var leading_digit_count: Int = int(seperator_pos)
 
-    var n = 0
+    var digit_iter = 0
     var float_num = 0.0
     var len_raw_num: Int = len(raw_num)
     for i in range(len_raw_num):
         var single_str: String = raw_num[i]
         if single_str != ".":
             try:
-                var single_int: Int = int(single_str)
-                float_num = float_num + single_int * (
-                    1 / (10 ** (n - seperator_pos_int + 1))
-                )
-                n = n + 1
+                var digit: Int = int(single_str)
+                if digit_iter < leading_digit_count:
+                    float_num = float_num + digit * ( 10 ** (leading_digit_count - 1 - digit_iter))
+                else:
+                    float_num = float_num + digit / ( 10 ** (-(leading_digit_count - 1 - digit_iter)))
+
+                digit_iter = digit_iter + 1
             except ValueError:
                 print("Invalid number format")
                 break
@@ -43,12 +30,21 @@ fn parse_float(raw_num: String) -> Float64:
 
 
 fn main():
-    var raw_string: String = "HH;1.42"
+    var n: Int = 10
+    var x = Tensor[DType.float32](n)
 
-    var data_seperator_pos: Int = raw_string.find(";")
+    try:
+        with open("src/test/resources/samples/measurements-1.txt", "r") as f:
+            # Read the file
+            var raw_data: String = f.read().rstrip()
 
-    var location: String = raw_string[:data_seperator_pos]
-    var raw_num: String = raw_string[data_seperator_pos + 1 :]
+            # Parse the data
+            var data_seperator_pos: Int = raw_data.find(";")
+            var location: String = raw_data[:data_seperator_pos]
+            var raw_num: String = raw_data[data_seperator_pos + 1 :]
 
-    var float_num: Float64 = parse_float(raw_num)
-    print(location, " has the temperatur of ", float_num, " degrees.")
+            var float_num: Float64 = parse_float(raw_num)
+            print(location, " has the temperatur of ", float_num, " degrees.")
+
+    except IOError:
+        print("File not found")
