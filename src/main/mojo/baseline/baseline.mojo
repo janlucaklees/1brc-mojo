@@ -17,9 +17,13 @@ fn parse_float(raw_num: String) -> Float64:
             try:
                 var digit: Int = int(single_str)
                 if digit_iter < leading_digit_count:
-                    float_num = float_num + digit * ( 10 ** (leading_digit_count - 1 - digit_iter))
+                    float_num = float_num + digit * (
+                        10 ** (leading_digit_count - 1 - digit_iter)
+                    )
                 else:
-                    float_num = float_num + digit / ( 10 ** (-(leading_digit_count - 1 - digit_iter)))
+                    float_num = float_num + digit / (
+                        10 ** (-(leading_digit_count - 1 - digit_iter))
+                    )
 
                 digit_iter = digit_iter + 1
             except ValueError:
