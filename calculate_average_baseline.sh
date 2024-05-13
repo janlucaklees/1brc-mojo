@@ -15,4 +15,4 @@
 #  limitations under the License.
 #
 
-time mojo src/main/mojo/baseline/baseline.mojo measurements.txt
+time mojo src/main/mojo/baseline/main.mojo measurements.txt

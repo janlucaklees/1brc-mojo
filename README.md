@@ -1,12 +1,12 @@
-# 1️⃣🐝🏎️ The One Billion Row Challenge with Bun
+# 1️⃣🐝🏎️ The One Billion Row Challenge with Mojo
 
 ## About the Challenge
 
 The One Billion Row Challenge (1BRC) is a fun exploration of how far modern Java can be pushed for aggregating one billion rows from a text file.
 
-Later the community created a dedicated @1brc organization to pay more attention to the implementations in other languages. This repository contains and accepts Bun based implementations.
+Later the community created a dedicated [@1brc](https://github.com/1brc) organization to pay more attention to the implementations in other languages. This repository contains, but does not accept, Mojo based implementations. I did this challenge in Mojo to test the language, but found it underdeveloped. Feel free to fork this repo and host the challenge for others to join.
 
-Grab all your (virtual) threads, reach out to SIMD, optimize your GC, or pull any other trick, and create the fastest implementation for solving this task!
+~~Grab all your (virtual) threads, reach out to SIMD, optimize your GC, or pull any other trick, and create the fastest implementation for solving this task!~~ For this language the challenge is to get it to work at all.
 
 <img src="1brc.png" alt="1BRC" style="display: block; margin-left: auto; margin-right: auto; margin-bottom:1em; width: 50%;">
 
@@ -16,8 +16,8 @@ The following shows ten rows as an example:
 
 ```
 Hamburg;12.0
-Bulawayo;8.9
-Palembang;38.8
+Tokyo;8.9
+Detmold;38.8
 St. John's;15.2
 Cracow;12.6
 Bridgetown;26.9
@@ -38,24 +38,25 @@ Submit your implementation and become part of the leaderboard!
 
 ## Results
 
-| #   | Result (m:s.ms) | Implementation                                                                  | Submitter                                        | Notes                                                                                                                                                                                                                                                                                                                 |
-| --- | --------------- | ------------------------------------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.  | 02:15.064       | [link](https://github.com/1brc/bun/blob/main/src/main/bun/Edgar-P-yan/index.ts) | [Edgar Pogosyan](https://github.com/Edgar-P-yan) | Potentially multi-threaded (there is a [bug in Bun](https://github.com/oven-sh/bun/issues/6557#issuecomment-1883642980), which does not let us use more than one core for now, but when that gets fixed, this could potentially run in about 14s), optimized parsing, input-specific `float` to `int` parser, no mmap |
-|     | 05:49.890       | [link](https://github.com/1brc/bun/blob/main/src/main/bun/baseline/index.ts)    | [Edgar Pogosyan](https://github.com/Edgar-P-yan) | The baseline, single threaded, naive implementation                                                                                                                                                                                                                                                                   |
+| #   | Result (h:m:s.ms)   | Implementation                                                                                 | Submitter                                         | Notes                       |
+| --- | ------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------- | --------------------------- |
+|     | approx. 4:10:00.000 | [link](https://github.com/janlucaklees/1brc-mojo/blob/master/src/main/mojo/baseline/main.mojo) | [Jan-Luca Klees](https://github.com/janlucaklees) | The baseline implementation |
 
-See [below](#entering-the-challenge) for instructions how to enter the challenge with your own implementation.
+~~See [below](#entering-the-challenge) for instructions how to enter the challenge with your own implementation.~~
+
+I won't host this challenge for this language.
 
 ## Prerequisites
 
-1. [Java 21](https://openjdk.org/projects/jdk/21/) to generate the `measurements.txt` files and optionally run tests.
-2. [Bun](https://bun.sh/docs/installation) must be installed on your system.
+1. [Java 22](https://openjdk.org/projects/jdk/22/) to generate the `measurements.txt` files and optionally run tests.
+2. [Mojo](https://www.modular.com/max/mojo) must be installed on your system.
 
 ## Running the Challenge
 
 This repository contains two programs:
 
 - `dev.morling.onebrc.CreateMeasurements` (invoked via _create_measurements.sh_): Creates the file _measurements.txt_ in the root directory of this project with a configurable number of random measurement values
-- `src/main/bun/baseline/index.js` (invoked via _calculate_average_baseline.sh_): Calculates the average values for the file _measurements.txt_
+- `src/main/mojo/baseline/main.mojo` (invoked via _calculate_average_baseline.sh_): Calculates the average values for the file _measurements.txt_
 
 Execute the following steps to run the challenge:
 
@@ -80,22 +81,17 @@ Execute the following steps to run the challenge:
    ./calculate_average_baseline.sh
    ```
 
-   The provided naive example implementation uses the Bun Streams for processing the file and completes the task in ~6m16s on environment used for [result evaluation](#evaluating-results).
-   It serves as the base line for comparing your own implementation.
+   The provided naive example implementation uses the bare minimum that Mojo offers for processing the file and completes the task in probably about 4 hours on my Machine. I won't do [result evaluation](#evaluating-results).
+   It serves as ~~the base line for comparing your own implementation~~ an example of either my incompetence or as a reflection of the state of Mojo.
 
 4. Optimize the heck out of it:
 
-   Adjust the `src/main/bun/baseline/index.js` program to speed it up, in any way you see fit (just sticking to a few rules described below).
+   Adjust the `src/main/mojo/baseline/main.mojo` program to speed it up, in any way you see fit (just sticking to a few rules described below).
    Options include parallelizing the computation, memory-mapping different sections of the file concurrently, choosing and tuning the garbage collector, and much more.
-
-## Flamegraph/Profiling
-
-> TODO: add instructions on how to profile Bun programs
 
 ## Rules and limits
 
 - No external library dependencies may be used
-<!-- - Implementations must be provided as a single source file -->
 - The computation must happen at application _runtime_, i.e. you cannot process the measurements file at _build time_
   and just bake the result into the binary
 - Input value ranges are as follows:
@@ -103,8 +99,9 @@ Execute the following steps to run the challenge:
   - Temperature value: non null double between -99.9 (inclusive) and 99.9 (inclusive), always with one fractional digit
 - There is a maximum of 10,000 unique station names
 - Implementations must not rely on specifics of a given data set, e.g. any valid station name as per the constraints above and any data distribution (number of measurements per station) must be supported
+- Python interoperability can be used.
 
-## Entering the Challenge
+<!-- ## Entering the Challenge
 
 To submit your own implementation to 1BRC, follow these steps:
 
@@ -119,20 +116,17 @@ To submit your own implementation to 1BRC, follow these steps:
   - The execution time of the program on your system and specs of the same (CPU, number of cores, RAM). This is for informative purposes only, the official runtime will be determined as described below.
 - I will run the program and determine its performance as described in the next section, and enter the result to the scoreboard.
 
-**Note:** I reserve the right to not evaluate specific submissions if I feel doubtful about the implementation (I.e. I won't run your Bitcoin miner ;).
-
-<!-- If you'd like to discuss any potential ideas for implementing 1BRC with the community,
-you can use the [GitHub Discussions](https://github.com/gunnarmorling/onebrc/discussions) of this repository.
-Please keep it friendly and civil. -->
+**Note:** I reserve the right to not evaluate specific submissions if I feel doubtful about the implementation (I.e. I won't run your Bitcoin miner ;). -->
 
 ## Evaluating Results
 
-For now results are determined by running the program on a Apple MacBook M1 32GB (10 physical).
+For now results were estimated by running the program with a reduced data set on my MSI GE70 with an i7-4700MQ.
 The `time` program is used for measuring execution times, i.e. end-to-end times are measured.
-Each contender will be run five times in a row.
+
+<!-- Each contender will be run five times in a row.
 The slowest and the fastest runs are discarded.
 The mean value of the remaining three runs is the result for that contender and will be added to the results table above.
-The exact same _measurements.txt_ file is used for evaluating all contenders.
+The exact same _measurements.txt_ file is used for evaluating all contenders. -->
 
 <!-- If you'd like to spin up your own box for testing on Hetzner Cloud, you may find these [set-up scripts](https://github.com/gunnarmorling/cloud-boxes/) (based on Terraform and Ansible) useful.
 It has been reported that instances of the CCX33 machine class can significantly vary in terms of performance,
@@ -169,7 +163,7 @@ _Q: Can I copy code from other submissions?_\
 A: Yes, you can. The primary focus of the challenge is about learning something new, rather than "winning". When you do so, please give credit to the relevant source submissions. Please don't re-submit other entries with no or only trivial improvements.
 
 _Q: Which operating system is used for evaluation?_\
-A: macOS Sonoma 14 (see [Evaluating Results](#evaluating-results))
+A: Arch Linux (see [Evaluating Results](#evaluating-results))
 
 _Q: My solution runs in 2 sec on my machine. Am I the fastest 1BRC-er in the world?_\
 A: Probably not :) 1BRC results are reported in wallclock time, thus results of different implementations are only comparable when obtained on the same machine. If for instance an implementation is faster on a 32 core workstation than on the 8 core evaluation instance, this doesn't allow for any conclusions. When sharing 1BRC results, you should also always share the result of running the baseline implementation on the same hardware.
